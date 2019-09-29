@@ -17,11 +17,11 @@ export default class ConnectScreen extends Component {
   state = { input: "" };
 
   toConnectScreen() {
-    
+    this.props.navigation.navigate('Listener', { input: this.state.input });
   }
 
   toDebugScreen() {
-
+    this.props.navigation.navigate('Scan');
   }
 
   render() {

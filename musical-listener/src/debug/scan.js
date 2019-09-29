@@ -1,6 +1,6 @@
 import { styles, colors } from '../theme';
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 import { PermissionsAndroid } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
@@ -11,7 +11,7 @@ const ScannedDevice = (props) => (
   <ListItem
     title={props.device.name}
     subtitle={props.device.id}
-    onPress={() => props.navigate('Device', { device: props.device })}
+    onPress={() => props.navigate('Debug', { device: props.device })}
     bottomDivider
     chevron
   />
@@ -19,7 +19,10 @@ const ScannedDevice = (props) => (
 
 export default class ScanScreen extends Component {
   static navigationOptions = {
-    title: 'Conecte-se a um ESP32 Accel',
+    title: 'Conecte-se a uma Mesa',
+    headerStyle: styles.header,
+    headerTitleStyle: styles.headerTitle,
+    headerTintColor: "white"
   };
 
   state = {
@@ -31,6 +34,10 @@ export default class ScanScreen extends Component {
 
   componentDidMount() {
     this.scan(2000);
+  }
+
+  componentWillUnmount() {
+    this.stopScan();
   }
 
   async requestBT() {
@@ -78,18 +85,20 @@ export default class ScanScreen extends Component {
           data={this.state.devices}
           renderItem={({ item }) => (<ScannedDevice device={item} navigate={navigate} />)}
         />
-        {this.state.scanning ?
-          <FloatingAction
-            color={colors.rosepulse} overlayColor="rgba(0,0,0,0)"
-            onPressMain={() => this.stopScan()}
-            floatingIcon={<Icon color="white" name="stop" />}
-          />
-          :
-          <FloatingAction
-            color={colors.bluesoft} overlayColor="rgba(0,0,0,0)"
-            onPressMain={() => this.scan(2000)}
-            floatingIcon={<Icon color="white" name="bluetooth-searching" />}
-          />}
+        {
+          this.state.scanning ?
+            <FloatingAction
+              color={colors.rosePulse} overlayColor="rgba(0,0,0,0)"
+              onPressMain={() => this.stopScan()}
+              floatingIcon={<Icon color="white" name="stop" />}
+            />
+            :
+            <FloatingAction
+              color={colors.blueSoft} overlayColor="rgba(0,0,0,0)"
+              onPressMain={() => this.scan(2000)}
+              floatingIcon={<Icon color="white" name="bluetooth-searching" />}
+            />
+        }
       </View>
     );
   }

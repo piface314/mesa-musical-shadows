@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
+import { SafeAreaView, Text, StatusBar } from 'react-native';
+import { styles } from '../theme';
 
-export default class DebugScreen extends Component {
-  static navigationOptions = ({ navigation }) => {
-    const device = navigation.getParam('device');
-    return {
-      title: device.name || device.id,
-
-    };
+export default class ListenerScreen extends Component {
+  static navigationOptions = {
+    title: '',
+    headerStyle: styles.header,
+    headerTitleStyle: styles.headerTitle,
+    headerTintColor: "white"
   };
+  
   render() {
-
+    const device = this.props.navigation.getParam('device');
+    return (
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
+        <StatusBar barStyle="light-content" backgroundColor={styles.header.backgroundColor} />
+        <Text>Listening "{device.name}"...</Text>
+      </SafeAreaView>
+    );
   }
 }
