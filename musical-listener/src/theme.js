@@ -1,4 +1,4 @@
-import { StyleSheet, Animated, Easing } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 export const colors = {
   roseLight: '#ff769c',

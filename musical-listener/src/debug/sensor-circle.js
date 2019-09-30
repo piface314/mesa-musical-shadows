@@ -28,17 +28,17 @@ export default class SensorCircle extends Component {
   }
 
   render() {
-    const { open } = this.props
+    const { open, style } = this.props
     const { signal } = this.state
     return (
-      <View style={{
+      <View style={[{
         width: SensorCircle.size,
         height: SensorCircle.size,
         borderRadius: SensorCircle.size / 2,
         borderWidth: 3,
         borderColor: open ? colors.rosePulse : "black",
         backgroundColor: colors.goldString + this.floatToHex(signal),
-      }} />
+      }, style]} />
     )
   }
 }
