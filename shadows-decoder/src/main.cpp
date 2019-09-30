@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 // Bluetooth
 #include <BLEDevice.h>
@@ -47,7 +48,7 @@ void setup() {
   
   //Configura o serviço da música
   BLEService *pMusicService = pServer->createService(BLEUUID(SERV_SLDRX_UUID), 35, (uint8_t)'\000');
-  for (int i = 0; i < 7; i++) {
+  for (int i = 0; i < 7; ++i) {
     pCharSensors[i] = pMusicService->createCharacteristic(sldrUUIDs[i], BLECharacteristic::PROPERTY_NOTIFY);
     pCharSensors[i]->addDescriptor(descriptors + i);
   }
@@ -56,5 +57,23 @@ void setup() {
 }
 
 void loop() {
-
+  if (connected) {
+    char val[21];
+    uint8_t *pval = (uint8_t *)val;
+    for (int i = 0; i < 7; ++i) {
+      sprintf(val, "%04d%04d%04d%04d%04d",
+        100 + rand() % 100,
+        200 + rand() % 100,
+        300 + rand() % 100,
+        400 + rand() % 100,
+        500 + rand() % 100);
+      Serial.println(val);
+      pCharSensors[i]->setValue(pval, 20);
+      pCharSensors[i]->notify();
+    }
+    uint8_t u = rand() % 6;
+    pCharUsers->setValue(&u, 1);
+    pCharUsers->notify();
+    delay(1000);
+  }
 }
