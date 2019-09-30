@@ -1,4 +1,4 @@
-import { StyleSheet, Animated, Easing } from 'react-native';
+import { StyleSheet, Animated, Easing } from 'react-native'
 
 export const colors = {
   roseLight: '#ff769c',
@@ -9,7 +9,7 @@ export const colors = {
   blueDeep: '#1b45ff',
   blueDeeper: '#1a39ba',
   goldString: '#ffc400',
-};
+}
 
 export const styles = StyleSheet.create({
   container: {
@@ -42,4 +42,4 @@ export const styles = StyleSheet.create({
     margin: 10,
     marginTop: 0,
   },
-});
+})

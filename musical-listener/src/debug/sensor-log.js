@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import React, { Component } from 'react'
+import { View, Text } from 'react-native'
 
-const transform = value => ((value || "").match(/..../g) || []).map(v => (+v / 1000.0).toFixed(3));
+const transform = value => ((value || "").match(/..../g) || []).map(v => (+v / 1000.0).toFixed(3))
 
 export default class SensorLog extends Component {
   render() {
-    const { signal, value } = this.props;
+    const { signal, value } = this.props
     return (
       <View style={{
         backgroundColor: "#0000007f",
@@ -20,6 +20,6 @@ export default class SensorLog extends Component {
           Valor: [{transform(value).toString()}]
         </Text>
       </View>
-    );
+    )
   }
 }

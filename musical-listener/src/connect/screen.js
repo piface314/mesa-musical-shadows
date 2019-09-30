@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { StatusBar, SafeAreaView, Image, ScrollView, View } from 'react-native';
-import { styles } from '../theme';
-import { Input, Button } from 'react-native-elements';
-import SpinningImage from './spinning';
+import React, { Component } from 'react'
+import { StatusBar, SafeAreaView, Image, ScrollView, View } from 'react-native'
+import { styles } from '../theme'
+import { Input, Button } from 'react-native-elements'
+import SpinningImage from './spinning'
 
-const logo = require("../../assets/logo.png");
+const logo = require("../../assets/logo.png")
 
 export default class ConnectScreen extends Component {
   static navigationOptions = {
@@ -12,16 +12,16 @@ export default class ConnectScreen extends Component {
     headerStyle: styles.header,
     headerTitleStyle: styles.headerTitle,
     headerTintColor: "white"
-  };
+  }
 
-  state = { input: "" };
+  state = { input: "" }
 
   toConnectScreen() {
-    this.props.navigation.navigate('Listener', { input: this.state.input });
+    this.props.navigation.navigate('Listener', { input: this.state.input })
   }
 
   toDebugScreen() {
-    this.props.navigation.navigate('Scan');
+    this.props.navigation.navigate('Scan')
   }
 
   render() {
@@ -43,6 +43,6 @@ export default class ConnectScreen extends Component {
             buttonStyle={styles.button} onPress={() => this.toDebugScreen()} />
         </ScrollView>
       </SafeAreaView>
-    );
+    )
   }
 }

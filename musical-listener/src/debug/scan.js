@@ -1,21 +1,21 @@
-import { styles, colors } from '../theme';
-import React, { Component } from 'react';
-import { SafeAreaView, View } from 'react-native';
-import { BleManager } from 'react-native-ble-plx';
-import { PermissionsAndroid } from 'react-native';
-import { FloatingAction } from "react-native-floating-action";
-import { Icon, ListItem } from 'react-native-elements';
-import { FlatList } from 'react-navigation';
+import { styles, colors } from '../theme'
+import React, { Component } from 'react'
+import { SafeAreaView, View } from 'react-native'
+import { BleManager } from 'react-native-ble-plx'
+import { PermissionsAndroid } from 'react-native'
+import { FloatingAction } from "react-native-floating-action"
+import { Icon, ListItem } from 'react-native-elements'
+import { FlatList } from 'react-navigation'
 
-const ScannedDevice = (props) => (
+const ScannedDevice = ({ device, navigate }) => (
   <ListItem
-    title={props.device.name}
-    subtitle={props.device.id}
-    onPress={() => props.navigate('Debug', { device: props.device })}
+    title={device.name}
+    subtitle={device.id}
+    onPress={() => navigate('Debug', { device: device })}
     bottomDivider
     chevron
   />
-);
+)
 
 export default class ScanScreen extends Component {
   static navigationOptions = {
@@ -23,62 +23,62 @@ export default class ScanScreen extends Component {
     headerStyle: styles.header,
     headerTitleStyle: styles.headerTitle,
     headerTintColor: "white"
-  };
+  }
 
   state = {
     devices: [],
     scanning: false
-  };
+  }
 
-  manager = new BleManager();
+  manager = new BleManager()
 
   componentDidMount() {
-    this.scan(2000);
+    this.scan(2000)
   }
 
   componentWillUnmount() {
-    this.stopScan();
+    this.stopScan()
   }
 
   async requestBT() {
     try {
-      const permission = PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION;
-      const granted = await PermissionsAndroid.request(permission);
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
+      const permission = PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
+      const granted = await PermissionsAndroid.request(permission)
+      return granted === PermissionsAndroid.RESULTS.GRANTED
     } catch (err) {
-      return err;
+      return err
     }
   }
 
   scan(timeout) {
     this.requestBT().then(granted => {
       if (granted) {
-        const devicesMap = {};
+        const devicesMap = {}
         const subscription = this.manager.onStateChange(state => {
-          if (state !== 'PoweredOn') return;
-          subscription.remove();
-          this.setState({ devices: [], scanning: true });
+          if (state !== 'PoweredOn') return
+          subscription.remove()
+          this.setState({ devices: [], scanning: true })
           this.manager.startDeviceScan(null, null, (error, device) => {
-            if (error) return;
-            const devices = [];
-            devicesMap[device.id] = device;
+            if (error) return
+            const devices = []
+            devicesMap[device.id] = device
             for (let id in devicesMap)
-              devices.push(devicesMap[id]);
-            this.setState({ devices: devices, scanning: true });
-          });
-          setTimeout(() => this.stopScan(), timeout);
-        }, true);
+              devices.push(devicesMap[id])
+            this.setState({ devices: devices, scanning: true })
+          })
+          setTimeout(() => this.stopScan(), timeout)
+        }, true)
       }
-    }).catch(e => console.warn(e));
+    }).catch(e => console.warn(e))
   }
 
   stopScan() {
-    this.manager.stopDeviceScan();
-    this.setState({ ...this.state, scanning: false });
+    this.manager.stopDeviceScan()
+    this.setState({ ...this.state, scanning: false })
   }
 
   render() {
-    const { navigate } = this.props.navigation;
+    const { navigate } = this.props.navigation
     return (
       <View style={styles.container}>
         <FlatList
@@ -100,6 +100,6 @@ export default class ScanScreen extends Component {
             />
         }
       </View>
-    );
+    )
   }
 }
