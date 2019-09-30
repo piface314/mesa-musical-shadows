@@ -7,7 +7,8 @@ export const colors = {
   blueSofter: '#e0edff',
   blueSoft: '#006aff',
   blueDeep: '#1b45ff',
-  blueDeeper: '#1a39ba'
+  blueDeeper: '#1a39ba',
+  goldString: '#ffc400',
 };
 
 export const styles = StyleSheet.create({
