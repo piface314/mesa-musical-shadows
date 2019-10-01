@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { StatusBar, SafeAreaView, Image, ScrollView, View } from 'react-native'
+import { StatusBar, SafeAreaView, ScrollView } from 'react-native'
 import { styles } from '../theme'
 import { Input, Button } from 'react-native-elements'
-import SpinningImage from './spinning'
+import SpinningImage from '../spinning'
 
 const logo = require("../../assets/logo.png")
 

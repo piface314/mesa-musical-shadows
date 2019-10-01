@@ -1,10 +1,9 @@
 import { styles, colors } from '../theme'
 import React, { Component } from 'react'
-import { SafeAreaView, View } from 'react-native'
+import { SafeAreaView } from 'react-native'
 import { BleManager } from 'react-native-ble-plx'
 import { PermissionsAndroid } from 'react-native'
-import { FloatingAction } from "react-native-floating-action"
-import { Icon, ListItem } from 'react-native-elements'
+import { Icon, ListItem, Button } from 'react-native-elements'
 import { FlatList } from 'react-navigation'
 
 const ScannedDevice = ({ device, navigate }) => (
@@ -14,6 +13,30 @@ const ScannedDevice = ({ device, navigate }) => (
     onPress={() => navigate('Debug', { device: device })}
     bottomDivider
     chevron
+  />
+)
+
+const fabSize = 60
+const fabMargin = 30
+const FAButton = ({ color, onPress, icon }) => (
+  <Button
+    raised
+    onPress={onPress}
+    containerStyle={{
+      position: 'absolute',
+      bottom: fabMargin,
+      right: fabMargin,
+      width: fabSize,
+      height: fabSize,
+      borderRadius: fabSize / 2,
+    }}
+    buttonStyle={{
+      backgroundColor: color,
+      width: fabSize,
+      height: fabSize,
+      borderRadius: fabSize / 2,
+    }}
+    icon={icon}
   />
 )
 
@@ -80,26 +103,20 @@ export default class ScanScreen extends Component {
   render() {
     const { navigate } = this.props.navigation
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <FlatList
           data={this.state.devices}
           renderItem={({ item }) => (<ScannedDevice device={item} navigate={navigate} />)}
         />
         {
           this.state.scanning ?
-            <FloatingAction
-              color={colors.rosePulse} overlayColor="rgba(0,0,0,0)"
-              onPressMain={() => this.stopScan()}
-              floatingIcon={<Icon color="white" name="stop" />}
-            />
+            <FAButton color={colors.rosePulse} onPress={() => this.stopScan()}
+              icon={<Icon color="white" name="stop" size={28} />} />
             :
-            <FloatingAction
-              color={colors.blueSoft} overlayColor="rgba(0,0,0,0)"
-              onPressMain={() => this.scan(2000)}
-              floatingIcon={<Icon color="white" name="bluetooth-searching" />}
-            />
+            <FAButton color={colors.blueSoft} onPress={() => this.scan(2000)}
+              icon={<Icon color="white" name="bluetooth-searching" size={28} />} />
         }
-      </View>
+      </SafeAreaView>
     )
   }
 }
