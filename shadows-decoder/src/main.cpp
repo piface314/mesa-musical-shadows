@@ -62,11 +62,11 @@ void loop() {
     uint8_t *pval = (uint8_t *)val;
     for (int i = 0; i < 7; ++i) {
       sprintf(val, "%04d%04d%04d%04d%04d",
-        100 + rand() % 100,
-        200 + rand() % 100,
-        300 + rand() % 100,
-        400 + rand() % 100,
-        500 + rand() % 100);
+        rand() % 1001,
+        rand() % 801,
+        rand() % 601,
+        rand() % 401,
+        rand() % 201);
       Serial.println(val);
       pCharSensors[i]->setValue(pval, 20);
       pCharSensors[i]->notify();

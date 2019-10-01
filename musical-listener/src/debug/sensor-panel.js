@@ -1,41 +1,35 @@
 import React, { Component } from 'react'
 import { View, Dimensions, TouchableOpacity } from 'react-native'
-import SensorCircle from "./sensor-circle"
-import { styles } from '../theme'
+import SensorCircle from './sensor-circle'
 
-const size = Math.round(Dimensions.get('window').width / 2) - 50;
+const size = Math.round(Dimensions.get('window').width / 2) - 60;
 
 export default class SensorPanel extends Component {
-  state = {
-    sensors: [] //{ char: , left: , top: , open: }
-  }
-
-  componentDidMount() {
-    const { chars } = this.props
-    const sensors = chars.map((char, i) => {
+  arrangeCircles() {
+    return this.props.chars.map((char, i) => {
       if (i == 6)
-        return { char, left: 0, top: 0, open: false }
+        return { char, left: 0, top: 0 }
       else {
         const angle = i * Math.PI / 3 + Math.PI / 2
         const left = Math.round(Math.cos(angle) * size)
         const top = Math.round(Math.sin(angle) * size)
-        return { char, left, top, open: false }
+        return { char, left, top }
       }
     })
-    this.setState({ sensors });
   }
 
   render() {
-    const { sensors } = this.state
+    const { open, onPress, style } = this.props
     return (
-      <View>
-        {sensors.map((s, i) => (
-          <TouchableOpacity key={i} onPress={() => console.warn(i)}>
-            <SensorCircle characteristic={s.char} style={{
+      <View style={style}>
+        {this.arrangeCircles().map((s, i) => (
+          <TouchableOpacity key={i} onPress={() => onPress(i)}
+            style={{
               position: 'absolute',
               top: s.top - SensorCircle.size / 2,
               left: s.left - SensorCircle.size / 2,
-            }} open={s.open} />
+            }}>
+            <SensorCircle characteristic={s.char} open={open === i} />
           </TouchableOpacity>
         ))}
       </View>
