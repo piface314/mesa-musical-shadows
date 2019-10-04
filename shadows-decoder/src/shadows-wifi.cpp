@@ -8,16 +8,12 @@ int attempts = 0;
 
 void WIFIloop() {
   if (connectedWiFi == CONNECTED) {
-
+    
   } else if (connectedWiFi == ATTEMPTING) {
     if (WiFi.isConnected()) {
       Serial.println("Connected!");
-      Serial.print("SSID: \"");
-      Serial.print(wifiSSID);
-      Serial.print("\"\n");
-      Serial.print("Password: \"");
-      Serial.print(wifiPSWD);
-      Serial.print("\"\n");
+      Serial.print("IP: ");
+      Serial.println(WiFi.localIP());
       connectedWiFi = CONNECTED;
     } else {
       attempts++;
