@@ -1,0 +1,33 @@
+#ifndef SHADOWS_BLE_H
+#define SHADOWS_BLE_H
+
+#include "Arduino.h"
+
+#include <cmath>
+#include <string>
+
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+
+using namespace std;
+
+#define SERV_WIFIC_UUID "A6B4E0B4-F610-4C51-903A-8425EEF6FD91"
+#define CHAR_WSSID_UUID "A6B4E0B5-F610-4C51-903A-8425EEF6FD91"
+#define CHAR_WPSWD_UUID "A6B4E0B6-F610-4C51-903A-8425EEF6FD91"
+#define SERV_USERS_UUID "EE0C2928-4910-40A4-AEE0-FCF11A28647F"
+#define CHAR_USERS_UUID "EE0C2929-4910-40A4-AEE0-FCF11A28647F"
+#define SERV_SLDRX_UUID "3908F740-3C1C-43C4-8948-4676B382771E"
+#define CHAR_SLDRX_UUID "3908F741-3C1C-43C4-8948-4676B382771E", \
+                        "3908F742-3C1C-43C4-8948-4676B382771E", \
+                        "3908F743-3C1C-43C4-8948-4676B382771E", \
+                        "3908F744-3C1C-43C4-8948-4676B382771E", \
+                        "3908F745-3C1C-43C4-8948-4676B382771E", \
+                        "3908F746-3C1C-43C4-8948-4676B382771E", \
+                        "3908F747-3C1C-43C4-8948-4676B382771E"
+
+void BLEsetup();
+void BLEloop();
+
+#endif
