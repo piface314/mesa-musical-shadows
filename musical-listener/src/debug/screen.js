@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
-import { SafeAreaView, StatusBar, Text } from 'react-native'
-import { styles } from '../theme'
+import { SafeAreaView, StatusBar, Text, View } from 'react-native'
+import { Icon, Button } from 'react-native-elements'
+import { styles, colors } from '../theme'
 import SensorPanel from './sensor-panel'
 import SensorLog from './sensor-log'
 import UsersLog from './users-log'
 import Loading from '../loading'
 
+const SERV_WIFIC_UUID = "A6B4E0B4-F610-4C51-903A-8425EEF6FD91"
 const SERV_USERS_UUID = "EE0C2928-4910-40A4-AEE0-FCF11A28647F"
 const SERV_SLDRX_UUID = "3908F740-3C1C-43C4-8948-4676B382771E"
 
@@ -21,25 +23,38 @@ export default class DebugScreen extends Component {
     device: this.props.navigation.getParam('device'),
     charUsers: null,
     connected: false,
-    open: null,
+    openSensor: null,
     error: null,
   }
 
+  charsWiFi = []
   monitorUser = null
   monitorSensors = []
 
   componentDidMount() {
+    // Conecta ao dispositivo
     this.state.device.connect().then(device => {
       this.setState({ ...this.state, connected: true })
       return device.discoverAllServicesAndCharacteristics()
     }).then(device => {
+      // Atualiza com os serviços e características descobertos
       this.setState({ ...this.state, device: device })
+
+      // Armazena as características de configuração do WiFi
+      device.characteristicsForService(SERV_WIFIC_UUID).then(chars => {
+        chars.sort((a, b) => a.uuid < b.uuid ? -1 : 1)
+        this.charsWiFi = chars
+      }).catch(() => this.setState({ ...this.state, error: "Este dispositivo não é uma Mesa." }))
+
+      // Monitora a característica de quantidade de usuários
       device.characteristicsForService(SERV_USERS_UUID).then(([char]) => {
         this.monitorUser = char.monitor((err, c) => {
           if (err) return
           this.setState({ ...this.state, charUsers: c })
         })
       }).catch(() => this.setState({ ...this.state, error: "Este dispositivo não é uma Mesa." }))
+
+      // Monitora as características dos sensores
       device.characteristicsForService(SERV_SLDRX_UUID).then(chars => {
         chars.forEach((c, i) => {
           this.monitorSensors[i] = c.monitor((err, c) => {
@@ -57,17 +72,22 @@ export default class DebugScreen extends Component {
   }
 
   openSensor(i) {
-    const { open } = this.state
-    this.setState({ ...this.state, open: i === open ? null : i })
+    const { openSensor } = this.state
+    this.setState({ ...this.state, openSensor: i === openSensor ? null : i })
+  }
+
+  toWifiScreen() {
+    const [ charSSID, charPSWD ] = this.charsWiFi
+    this.props.navigation.navigate('Wifi', { charSSID, charPSWD })
   }
 
   render() {
-    const { open, charUsers, error } = this.state
+    const { openSensor, charUsers, error } = this.state
     if (error)
       return (
         <SafeAreaView style={styles.centerContainer}>
           <Text>{error}</Text>
-          <Text style={{fontSize: 32, marginTop: 20}}>:(</Text>
+          <Text style={{ fontSize: 32, marginTop: 20 }}>:(</Text>
         </SafeAreaView>
       )
     const charSensors = []
@@ -81,15 +101,21 @@ export default class DebugScreen extends Component {
           top: 20,
           left: 20,
           right: 20
-        }} characteristic={open >= 0 && charSensors[open]} />
+        }} characteristic={openSensor >= 0 && charSensors[openSensor]} />
         <SensorPanel style={{}}
-          chars={charSensors} open={open} onPress={(i) => this.openSensor(i)} />
-        <UsersLog style={{
+          chars={charSensors} open={openSensor} onPress={(i) => this.openSensor(i)} />
+        <View style={{
           position: 'absolute',
           bottom: 20,
           left: 20,
-          right: 20
-        }} characteristic={charUsers} />
+          right: 20,
+          justifyContent: 'space-between',
+        }}>
+          <UsersLog characteristic={charUsers} />
+          <Button title="CONFIGURAR WI-FI" raised
+            buttonStyle={styles.button} containerStyle={{ marginTop: 10 }}
+            onPress={() => this.toWifiScreen()} />
+        </View>
         <Loading show={!charUsers || charSensors.length == 0} />
       </SafeAreaView>
     )

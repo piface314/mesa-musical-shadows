@@ -2,8 +2,11 @@ import React, { Component } from 'react'
 import { SafeAreaView, Dimensions, StatusBar, View } from 'react-native'
 import { styles, colors } from '../theme'
 import SpinningImage from '../spinning'
+import SlidingImage from './sliding';
 
 const pulseCircle = require("../../assets/pulse-circle.png")
+const wave1 = require("../../assets/wave1.png")
+const wave2 = require("../../assets/wave2.png")
 const size = Math.round(Dimensions.get('window').width) - 80;
 
 export default class ListenerScreen extends Component {

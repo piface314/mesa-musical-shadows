@@ -3,8 +3,9 @@ import React, { Component } from 'react'
 import { SafeAreaView } from 'react-native'
 import { BleManager } from 'react-native-ble-plx'
 import { PermissionsAndroid } from 'react-native'
-import { Icon, ListItem, Button } from 'react-native-elements'
+import { Icon, ListItem } from 'react-native-elements'
 import { FlatList } from 'react-navigation'
+import FAButton from '../fab'
 
 const ScannedDevice = ({ device, navigate }) => (
   <ListItem
@@ -13,30 +14,6 @@ const ScannedDevice = ({ device, navigate }) => (
     onPress={() => navigate('Debug', { device: device })}
     bottomDivider
     chevron
-  />
-)
-
-const fabSize = 60
-const fabMargin = 30
-const FAButton = ({ color, onPress, icon }) => (
-  <Button
-    raised
-    onPress={onPress}
-    containerStyle={{
-      position: 'absolute',
-      bottom: fabMargin,
-      right: fabMargin,
-      width: fabSize,
-      height: fabSize,
-      borderRadius: fabSize / 2,
-    }}
-    buttonStyle={{
-      backgroundColor: color,
-      width: fabSize,
-      height: fabSize,
-      borderRadius: fabSize / 2,
-    }}
-    icon={icon}
   />
 )
 

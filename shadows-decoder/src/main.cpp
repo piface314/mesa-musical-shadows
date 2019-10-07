@@ -6,6 +6,7 @@ using namespace std;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(2, OUTPUT);
   BLEsetup();
 }
 
