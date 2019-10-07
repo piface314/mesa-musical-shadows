@@ -3,7 +3,8 @@ import { Animated, Easing, Dimensions, View } from 'react-native'
 import { styles } from '../theme';
 
 export default class SlidingImage extends Component {
-  state = { slideValue: new Animated.Value(0), wd: 0 }
+  state = { slideValue: new Animated.Value(0), wd: Dimensions.get('screen').width }
+  resize = ({ screen }) => this.setState({ ...this.state, wd: screen.width })
 
   componentDidMount() {
     Animated.loop(
@@ -17,10 +18,11 @@ export default class SlidingImage extends Component {
         }
       )
     ).start()
+    Dimensions.addEventListener('change', this.resize)
+  }
 
-    Dimensions.addEventListener('change', ({ screen }) => {
-      this.setState({ ...this.state, wd: screen.width })
-    })
+  componentWillUnmount() {
+    Dimensions.removeEventListener('change', this.resize)
   }
 
   render() {
@@ -31,12 +33,24 @@ export default class SlidingImage extends Component {
       outputRange: [0, -wd]
     })
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { position: 'absolute', left: 0, top: 0, bottom: 0, right: 0 }]}>
         <Animated.Image style={{
-          ...style, position: 'absolute', left: 0, width: wd, transform: [{ translateX: slide }],
+          ...style,
+          position: 'absolute',
+          alignSelf: 'center',
+          left: 0,
+          width: wd,
+          resizeMode: 'contain',
+          transform: [{ translateX: slide }],
         }} source={source} />
         <Animated.Image style={{
-          ...style, position: 'absolute', left: wd, width: wd, transform: [{ translateX: slide }],
+          ...style,
+          position: 'absolute',
+          alignSelf: 'center',
+          left: wd,
+          width: wd,
+          resizeMode: 'contain',
+          transform: [{ translateX: slide }],
         }} source={source} />
       </View>
     )

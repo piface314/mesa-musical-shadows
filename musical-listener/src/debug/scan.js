@@ -90,7 +90,7 @@ export default class ScanScreen extends Component {
             <FAButton color={colors.rosePulse} onPress={() => this.stopScan()}
               icon={<Icon color="white" name="stop" size={28} />} />
             :
-            <FAButton color={colors.blueSoft} onPress={() => this.scan(2000)}
+            <FAButton color={colors.blueSoft} onPress={() => this.scan(2000)} onLongPress={() => this.scan(5000)}
               icon={<Icon color="white" name="bluetooth-searching" size={28} />} />
         }
       </SafeAreaView>

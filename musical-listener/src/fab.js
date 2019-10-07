@@ -3,9 +3,10 @@ import { Button } from 'react-native-elements'
 
 const fabSize = 60
 const fabMargin = 30
-const FAButton = ({ color, onPress, icon }) => (
+const FAButton = ({ color, onPress, onLongPress, icon }) => (
   <Button
     raised
+    onLongPress={onLongPress}
     onPress={onPress}
     containerStyle={{
       position: 'absolute',

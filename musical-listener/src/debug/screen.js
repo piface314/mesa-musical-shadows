@@ -77,12 +77,13 @@ export default class DebugScreen extends Component {
   }
 
   toWifiScreen() {
-    const [ charSSID, charPSWD ] = this.charsWiFi
+    const [charSSID, charPSWD] = this.charsWiFi
     this.props.navigation.navigate('Wifi', { charSSID, charPSWD })
   }
 
   render() {
     const { openSensor, charUsers, error } = this.state
+    const { navigation } = this.props
     if (error)
       return (
         <SafeAreaView style={styles.centerContainer}>
@@ -102,8 +103,7 @@ export default class DebugScreen extends Component {
           left: 20,
           right: 20
         }} characteristic={openSensor >= 0 && charSensors[openSensor]} />
-        <SensorPanel style={{}}
-          chars={charSensors} open={openSensor} onPress={(i) => this.openSensor(i)} />
+        <SensorPanel chars={charSensors} open={openSensor} onPress={(i) => this.openSensor(i)} />
         <View style={{
           position: 'absolute',
           bottom: 20,
@@ -116,7 +116,7 @@ export default class DebugScreen extends Component {
             buttonStyle={styles.button} containerStyle={{ marginTop: 10 }}
             onPress={() => this.toWifiScreen()} />
         </View>
-        <Loading show={!charUsers || charSensors.length == 0} />
+        <Loading show={!charUsers || charSensors.length == 0} cancel={() => navigation.goBack()} />
       </SafeAreaView>
     )
   }

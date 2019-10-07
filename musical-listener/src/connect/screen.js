@@ -39,7 +39,7 @@ export default class ConnectScreen extends Component {
           />
           <Button title="CONECTAR" raised containerStyle={styles.buttonContainer}
             buttonStyle={styles.button} onPress={() => this.toConnectScreen()} />
-          <Button title="DEBUG" raised containerStyle={styles.buttonContainer}
+          <Button title="DEBUG & CONFIGURAR" raised containerStyle={styles.buttonContainer}
             buttonStyle={styles.button} onPress={() => this.toDebugScreen()} />
         </ScrollView>
       </SafeAreaView>

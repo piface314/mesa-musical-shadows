@@ -22,7 +22,11 @@ export default class ListenerScreen extends Component {
     return (
       <SafeAreaView style={styles.centerContainer}>
         <StatusBar barStyle="light-content" backgroundColor={styles.header.backgroundColor} />
-        <SpinningImage style={{ height: size, width: size, margin: 25, resizeMode: 'contain' }}
+        <SlidingImage source={wave1} duration={6000} />
+        <SpinningImage style={{
+          position: 'absolute', height: size, width: size,
+          margin: 25, resizeMode: 'contain'
+        }}
           source={pulseCircle} duration={4000} />
         <View style={{
           position: 'absolute',
@@ -31,6 +35,7 @@ export default class ListenerScreen extends Component {
           borderBottomColor: colors.goldString,
           borderBottomWidth: 3,
         }} />
+        <SlidingImage source={wave2} duration={4000} />
       </SafeAreaView>
     )
   }
