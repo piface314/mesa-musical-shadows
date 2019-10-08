@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { SafeAreaView, StatusBar, Text, View } from 'react-native'
-import { Icon, Button } from 'react-native-elements'
-import { styles, colors } from '../theme'
+import { Button } from 'react-native-elements'
+import { styles } from '../theme'
 import SensorPanel from './sensor-panel'
 import SensorLog from './sensor-log'
 import UsersLog from './users-log'
 import Loading from '../loading'
+import Player from '../listen/player'
+import { Base64 } from 'js-base64'
 
 const SERV_WIFIC_UUID = "A6B4E0B4-F610-4C51-903A-8425EEF6FD91"
 const SERV_USERS_UUID = "EE0C2928-4910-40A4-AEE0-FCF11A28647F"
@@ -32,6 +34,9 @@ export default class DebugScreen extends Component {
   monitorSensors = []
 
   componentDidMount() {
+    Player.setVolume(Array(Player.sounds.length).fill(0))
+    Player.play()
+
     // Conecta ao dispositivo
     this.state.device.connect().then(device => {
       this.setState({ ...this.state, connected: true })
@@ -69,6 +74,7 @@ export default class DebugScreen extends Component {
     if (this.monitorUser) this.monitorUser.remove()
     this.monitorSensors.forEach(m => m.remove())
     this.state.device.cancelConnection()
+    Player.stop()
   }
 
   openSensor(i) {
@@ -79,6 +85,12 @@ export default class DebugScreen extends Component {
   toWifiScreen() {
     const [charSSID, charPSWD] = this.charsWiFi
     this.props.navigation.navigate('Wifi', { charSSID, charPSWD })
+  }
+
+  setVolume(chars) {
+    const vol = chars.map(c => (+Base64.decode(c.value).slice(0, 4)) / 1000.0)
+    if (vol.length == 7)
+      Player.setVolume(vol)
   }
 
   render() {
@@ -94,6 +106,8 @@ export default class DebugScreen extends Component {
     const charSensors = []
     for (let i = 0; this.state["charSensors" + i]; i++)
       charSensors[i] = this.state["charSensors" + i]
+    this.setVolume(charSensors)
+
     return (
       <SafeAreaView style={styles.centerContainer}>
         <StatusBar barStyle="light-content" backgroundColor={styles.header.backgroundColor} />

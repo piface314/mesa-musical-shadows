@@ -21,7 +21,6 @@ export default class WifiSettingsScreen extends Component {
     const { getParam } = this.props.navigation
     const charSSID = getParam('charSSID')
     const charPSWD = getParam('charPSWD')
-    console.log(charSSID.uuid, charPSWD.uuid);
     charSSID.writeWithoutResponse(Base64.encode(ssid))
     charPSWD.writeWithoutResponse(Base64.encode(pswd))
   }
