@@ -6,17 +6,20 @@ int _signals[NSENSORS] = { 0 };
 void SHDsetup() {
   BLEsetup();
   WIFIsetup();
+  IOTsetup(SHDsetUsers);
 }
 
 void SHDloop() {
   static unsigned long tprev = 0;
   unsigned long t = millis();
+  IOTloop();
   if (t - tprev > DELAY) {
     tprev = t;
     for (int i = 0; i < NSENSORS; i++)
       _signals[i] = rand() % 1001;
     int *shadows = SHDdecode();
-    // tell the cloud
+    if (WIFIisConnected())
+      IOTsend(shadows);
     BLEsend(SHDgetUsers(), shadows);
   }
 }

@@ -5,6 +5,7 @@
 #include "WiFi.h"
 
 #include "constants.h"
+#include "iot-mgr.h"
 #include "eeprom-mgr.h"
 
 void WIFIsetup();
