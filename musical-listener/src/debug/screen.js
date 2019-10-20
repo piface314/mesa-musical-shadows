@@ -103,6 +103,7 @@ export default class DebugScreen extends Component {
           <Text style={{ fontSize: 32, marginTop: 20 }}>:(</Text>
         </SafeAreaView>
       )
+      
     const charSensors = []
     for (let i = 0; this.state["charSensors" + i]; i++)
       charSensors[i] = this.state["charSensors" + i]

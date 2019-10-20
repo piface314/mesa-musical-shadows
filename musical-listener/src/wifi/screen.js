@@ -26,9 +26,10 @@ export default class WifiSettingsScreen extends Component {
   }
 
   render() {
+    const { navigation } = this.props
     const { ssid, pswd } = this.state
     return (
-      <SafeAreaView style={[styles.container, {paddingTop: 30}]}>
+      <SafeAreaView style={[styles.container, { paddingTop: 30 }]}>
         <StatusBar barStyle="light-content" backgroundColor={styles.header.backgroundColor} />
         <ScrollView>
           <Input
@@ -44,7 +45,10 @@ export default class WifiSettingsScreen extends Component {
             inputContainerStyle={styles.inputContainer}
           />
           <Button title="CONFIGURAR" raised containerStyle={styles.buttonContainer}
-            buttonStyle={styles.button} onPress={() => this.set(ssid, pswd)} />
+            buttonStyle={styles.button} onPress={() => {
+              this.set(ssid, pswd)
+              navigation.goBack()
+            }} />
         </ScrollView>
       </SafeAreaView>
     )

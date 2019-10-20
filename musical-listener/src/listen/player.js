@@ -21,7 +21,7 @@ class Player {
   }
 
   setVolume(volume) {
-    this.sounds.forEach((s, i) => s.setVolume(volume[i]))
+    this.sounds.forEach((s, i) => s.setVolume(volume[i] || 0.0))
   }
 
   stop() {
