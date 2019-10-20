@@ -1,17 +1,14 @@
 #include "Arduino.h"
-#include "shadows-ble.h"
-#include "shadows-wifi.h"
-
-using namespace std;
+#include "constants.h"
+#include "decoder.h"
 
 void setup() {
   Serial.begin(9600);
-  pinMode(2, OUTPUT);
-  BLEsetup();
+  Serial.print("\r");
+  pinMode(LED, OUTPUT);
+  SHDsetup();
 }
 
 void loop() {
-  BLEloop();
-  WIFIloop();
-  delay(1000);
+  SHDloop();
 }
