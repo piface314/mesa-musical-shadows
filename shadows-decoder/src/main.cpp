@@ -4,7 +4,7 @@
 
 void setup() {
   Serial.begin(9600);
-  Serial.print("\r");
+  Serial.print("\r\n");
   pinMode(LED, OUTPUT);
   SHDsetup();
 }

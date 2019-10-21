@@ -1,0 +1,18 @@
+#ifndef MMS_IOT_CONFIG_H
+#define MMS_IOT_CONFIG_H
+
+const char PROJECTID[] = ${PROJECTID};
+const char LOCATION[] = ${LOCATION};
+const char REGISTRYID[] = ${REGISTRYID};
+const char DEVICEID[] = ${DEVICEID};
+
+const char NTP1[] = "pool.ntp.org";
+const char NTP2[] = "time.nist.gov";
+
+const char PRIVATE_KEY[] = ${PRIVATE_KEY};
+
+const int JWT_EXP_SECS = 3600;
+
+const char ROOT_CERT[] = ${ROOT_CERT};
+
+#endif

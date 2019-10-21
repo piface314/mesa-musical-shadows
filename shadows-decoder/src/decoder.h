@@ -5,6 +5,7 @@
 #include "constants.h"
 #include "ble-mgr.h"
 #include "wifi-mgr.h"
+#include "iot-mgr.h"
 
 const int DELAY = 1000;
 

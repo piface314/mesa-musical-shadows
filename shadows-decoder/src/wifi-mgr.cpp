@@ -12,6 +12,7 @@ void _onDisconnect(WiFiEvent_t event, WiFiEventInfo_t info) {
 
 void WIFIsetup() {
   MEMsetup(_ssid, _pass);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(_ssid, _pass);
   WiFi.onEvent(_onConnect, SYSTEM_EVENT_STA_CONNECTED);
   WiFi.onEvent(_onDisconnect, SYSTEM_EVENT_STA_DISCONNECTED);
@@ -19,7 +20,7 @@ void WIFIsetup() {
 }
 
 bool WIFIisConnected() {
-  return WiFi.isConnected();
+  return WiFi.status() == WL_CONNECTED;
 }
 
 void WIFIsetCredentials(char ssid[DATA_SIZE], char pass[DATA_SIZE]) {

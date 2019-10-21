@@ -16,7 +16,7 @@ const char CHAR_SLDRX_UUID[NSENSORS][37] = {
   "3908F747-3C1C-43C4-8948-4676B382771E"
 };
 
-BLECharacteristic *_charUsers;
+BLECharacteristic *_charUsers = NULL;
 BLECharacteristic *_charSensors[NSENSORS];
 bool _connected = false;
 
@@ -34,6 +34,7 @@ class WifiCallbacks: public BLECharacteristicCallbacks {
 };
 
 void BLEsetup() {
+  if (_charUsers != NULL) return;
   // Configura o ESP32
   BLEDevice::init("ESP32 Mesa Musical Shadows");
   BLEServer *pServer = BLEDevice::createServer();
