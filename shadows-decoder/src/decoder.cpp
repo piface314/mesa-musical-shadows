@@ -8,7 +8,7 @@ void SHDsetup() {
   IOTsetup(SHDsetUsers);
 }
 
-const int BLEDELAY = DELAY << 3;
+const int BLEDELAY = DELAY * 10;
 void SHDloop() {
   static unsigned long tprev = 0, tstart = millis();
   static bool isBLEPending = true;

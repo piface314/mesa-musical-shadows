@@ -72,7 +72,7 @@ void IOTloop(bool connectedWiFi) {
   }
   if (mqttClient != NULL) {
     mqttClient->loop();
-    delay(10);
+    delay(50);
     if (!mqttClient->connected())
       mqtt->mqttConnect();
   }
@@ -84,7 +84,7 @@ void IOTsend(int *shadows) {
   const int lim = NSENSORS * NSETS;
   for (int i = 0; i < lim; i += NSETS) {
     if (i) t += ",";
-    sprintf(buffer, "[%d,%d,%d,%d,%d]",
+    sprintf(buffer, "\"%d,%d,%d,%d,%d\"",
       shadows[i], shadows[i + 1],
       shadows[i + 2], shadows[i + 3], shadows[i + 4]);
     t += buffer;
