@@ -1,8 +1,8 @@
 {
-  "name": "set-n-users",
+  "name": "set-user-count",
   "version": "0.0.1",
   "dependencies": {
     "@google-cloud/pubsub": "^0.18.0",
-    "googleapis": ">=32.0.0"
+    "googleapis": ">=32.0.0",
   }
 }
