@@ -4,23 +4,29 @@ int _users = 0;
 int _signals[NSENSORS] = { 0 }; 
 
 void SHDsetup() {
-  BLEsetup();
   WIFIsetup();
   IOTsetup(SHDsetUsers);
 }
 
+const int BLEDELAY = DELAY << 3;
 void SHDloop() {
-  static unsigned long tprev = 0;
+  static unsigned long tprev = 0, tstart = millis();
+  static bool isBLEPending = true;
   unsigned long t = millis();
-  IOTloop();
+  bool connectedWiFi = WIFIisConnected();
+  IOTloop(connectedWiFi);
   if (t - tprev > DELAY) {
     tprev = t;
     for (int i = 0; i < NSENSORS; i++)
       _signals[i] = rand() % 1001;
     int *shadows = SHDdecode();
-    if (WIFIisConnected())
+    if (connectedWiFi)
       IOTsend(shadows);
     BLEsend(SHDgetUsers(), shadows);
+  }
+  if (isBLEPending && t - tstart > BLEDELAY) {
+    isBLEPending = false;
+    BLEsetup();
   }
 }
 

@@ -43,8 +43,8 @@ void (*_setUsers)(int) = NULL;
 
 void IOTsetup(void (*setusers)(int)) {
   _setUsers = setusers;
-
   device = new CloudIoTCoreDevice(PROJECTID, LOCATION, REGISTRYID, DEVICEID, PRIVATE_KEY);
+  Serial.println("Setup IoT!");
 }
 
 void IOTconfigure() {
@@ -59,14 +59,15 @@ void IOTconfigure() {
   mqtt = new CloudIoTCoreMqtt(mqttClient, netClient, device);
   mqtt->setUseLts(true);
   mqtt->startMQTT();
+  Serial.println("Configured IoT!");
 }
 
-void IOTloop() {
+void IOTloop(bool connectedWiFi) {
   static unsigned long tprev = 0;
   unsigned long t = millis();
   if (t - tprev > 1000 && netClient == NULL) {
     tprev = t;
-    if (WiFi.status() == WL_CONNECTED)
+    if (connectedWiFi)
       IOTconfigure();
   }
   if (mqttClient != NULL) {
@@ -89,14 +90,10 @@ void IOTsend(int *shadows) {
     t += buffer;
   }
   t += "]";
-  // publishTelemetry(t);
+  publishTelemetry(t);
 }
 
 void IOTsetUsers(String &payload) {
   if (_setUsers != NULL)
-    _setUsers(0);
-}
-
-void IOTonConnect() {
-  
+    _setUsers(payload.toInt());
 }

@@ -28,9 +28,8 @@ void publishTelemetry(String subfolder, const char* data, int length);
 void messageReceived(String &topic, String &payload);
 
 void IOTsetup(void (*setusers)(int));
-void IOTloop();
+void IOTloop(bool connectedWiFi);
 void IOTsend(int *shadows);
 void IOTsetUsers(String &payload);
-void IOTonConnect();
 
 #endif

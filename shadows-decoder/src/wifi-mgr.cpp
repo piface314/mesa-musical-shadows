@@ -4,7 +4,6 @@ char _ssid[DATA_SIZE], _pass[DATA_SIZE];
 
 void _onConnect(WiFiEvent_t event, WiFiEventInfo_t info) {
   digitalWrite(LED, HIGH);
-  IOTonConnect();
 }
 
 void _onDisconnect(WiFiEvent_t event, WiFiEventInfo_t info) {
@@ -21,7 +20,7 @@ void WIFIsetup() {
 }
 
 bool WIFIisConnected() {
-  return WiFi.isConnected();
+  return WiFi.status() == WL_CONNECTED;
 }
 
 void WIFIsetCredentials(char ssid[DATA_SIZE], char pass[DATA_SIZE]) {
