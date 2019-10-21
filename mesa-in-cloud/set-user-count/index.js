@@ -21,7 +21,6 @@ exports.setUserCount = function (event, context) {
     };
     return google.cloudiot('v1').projects.locations.registries.devices.modifyCloudToDeviceConfig(request);
   }).then(result => {
-    console.log(result);
     console.log(result.data);
   });
 };
