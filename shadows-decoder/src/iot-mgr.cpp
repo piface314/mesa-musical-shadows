@@ -79,14 +79,11 @@ void IOTloop(bool connectedWiFi) {
 }
 
 void IOTsend(int *shadows) {
-  static char buffer[27];
+  static char buffer[10];
   String t = "[";
-  const int lim = NSENSORS * NSETS;
-  for (int i = 0; i < lim; i += NSETS) {
+  for (int i = 0; i < NSENSORS; i++) {
     if (i) t += ",";
-    sprintf(buffer, "\"%d,%d,%d,%d,%d\"",
-      shadows[i], shadows[i + 1],
-      shadows[i + 2], shadows[i + 3], shadows[i + 4]);
+    sprintf(buffer, "%.3lf", (shadows[i] * 1.0) / 1000.0);
     t += buffer;
   }
   t += "]";

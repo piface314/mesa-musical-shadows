@@ -1,21 +1,21 @@
 'use strict';
 const { google } = require('googleapis');
-const projectId = 'mesa-musical-shadows';
+const projectID = 'mesa-musical-shadows';
 const cloudRegion = 'europe-west1';
-const registryId = 'shadows-decoder';
-const deviceId = 'shadows-decoder-device';
+const registryID = 'shadows-decoder';
 
 exports.setUserCount = function (event, context) {
+  const { deviceID } = context.params;
   const count = +event.value.fields.count.integerValue;
   console.log(count);
   google.auth.getClient().then(client => {
     google.options({
       auth: client
     });
-    const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-    const registryName = `${parentName}/registries/${registryId}`;
+    const parentName = `projects/${projectID}/locations/${cloudRegion}`;
+    const registryName = `${parentName}/registries/${registryID}`;
     const request = {
-      name: `${registryName}/devices/${deviceId}`,
+      name: `${registryName}/devices/${deviceID}`,
       versionToUpdate: 0,
       binaryData: Buffer.from(JSON.stringify(count)).toString('base64')
     };
