@@ -4,13 +4,12 @@ import { Button } from 'react-native-elements'
 import { styles } from '../theme'
 import SensorPanel from './sensor-panel'
 import SensorLog from './sensor-log'
-import UsersLog from './users-log'
+import InfoLog from './info-log'
 import Loading from '../loading'
-import Player from '../listen/player'
 import { Base64 } from 'js-base64'
 
 const SERV_WIFIC_UUID = "A6B4E0B4-F610-4C51-903A-8425EEF6FD91"
-const SERV_USERS_UUID = "EE0C2928-4910-40A4-AEE0-FCF11A28647F"
+const SERV_DEBUG_UUID = "EE0C2928-4910-40A4-AEE0-FCF11A28647F"
 const SERV_SLDRX_UUID = "3908F740-3C1C-43C4-8948-4676B382771E"
 
 export default class DebugScreen extends Component {
@@ -23,20 +22,17 @@ export default class DebugScreen extends Component {
 
   state = {
     device: this.props.navigation.getParam('device'),
-    charUsers: null,
+    charDebug: null,
     connected: false,
     openSensor: null,
     error: null,
   }
 
   charsWiFi = []
-  monitorUser = null
+  monitorDebug = null
   monitorSensors = []
 
   componentDidMount() {
-    Player.setVolume(Array(Player.sounds.length).fill(0))
-    Player.play()
-
     // Conecta ao dispositivo
     this.state.device.connect().then(device => {
       this.setState({ ...this.state, connected: true })
@@ -52,10 +48,10 @@ export default class DebugScreen extends Component {
       }).catch(() => this.setState({ ...this.state, error: "Este dispositivo não é uma Mesa." }))
 
       // Monitora a característica de quantidade de usuários
-      device.characteristicsForService(SERV_USERS_UUID).then(([char]) => {
-        this.monitorUser = char.monitor((err, c) => {
+      device.characteristicsForService(SERV_DEBUG_UUID).then(([char]) => {
+        this.monitorDebug = char.monitor((err, c) => {
           if (err) return
-          this.setState({ ...this.state, charUsers: c })
+          this.setState({ ...this.state, charDebug: c })
         })
       }).catch(() => this.setState({ ...this.state, error: "Este dispositivo não é uma Mesa." }))
 
@@ -71,10 +67,9 @@ export default class DebugScreen extends Component {
   }
 
   componentWillUnmount() {
-    if (this.monitorUser) this.monitorUser.remove()
+    if (this.monitorDebug) this.monitorDebug.remove()
     this.monitorSensors.forEach(m => m.remove())
     this.state.device.cancelConnection()
-    Player.stop()
   }
 
   openSensor(i) {
@@ -87,14 +82,8 @@ export default class DebugScreen extends Component {
     this.props.navigation.navigate('Wifi', { charSSID, charPSWD })
   }
 
-  setVolume(chars) {
-    const vol = chars.map(c => (+Base64.decode(c.value).slice(0, 4)) / 1000.0)
-    if (vol.length == 7)
-      Player.setVolume(vol)
-  }
-
   render() {
-    const { openSensor, charUsers, error } = this.state
+    const { openSensor, charDebug, error } = this.state
     const { navigation } = this.props
     if (error)
       return (
@@ -104,10 +93,9 @@ export default class DebugScreen extends Component {
         </SafeAreaView>
       )
       
-    const charSensors = []
+    const readings = []
     for (let i = 0; this.state["charSensors" + i]; i++)
-      charSensors[i] = this.state["charSensors" + i]
-    this.setVolume(charSensors)
+      readings[i] = +Base64.decode(this.state["charSensors" + i].value) / 1000.0
 
     return (
       <SafeAreaView style={styles.centerContainer}>
@@ -117,8 +105,8 @@ export default class DebugScreen extends Component {
           top: 20,
           left: 20,
           right: 20
-        }} characteristic={openSensor >= 0 && charSensors[openSensor]} />
-        <SensorPanel chars={charSensors} open={openSensor} onPress={(i) => this.openSensor(i)} />
+        }} reading={openSensor >= 0 && readings[openSensor]} />
+        <SensorPanel readings={readings} open={openSensor} onPress={(i) => this.openSensor(i)} />
         <View style={{
           position: 'absolute',
           bottom: 20,
@@ -126,12 +114,12 @@ export default class DebugScreen extends Component {
           right: 20,
           justifyContent: 'space-between',
         }}>
-          <UsersLog characteristic={charUsers} />
+          <InfoLog characteristic={charDebug} />
           <Button title="CONFIGURAR WI-FI" raised
             buttonStyle={styles.button} containerStyle={{ marginTop: 10 }}
             onPress={() => this.toWifiScreen()} />
         </View>
-        <Loading show={!charUsers || charSensors.length == 0} cancel={() => navigation.goBack()} />
+        <Loading show={!charDebug || readings.length == 0} cancel={() => navigation.goBack()} />
       </SafeAreaView>
     )
   }
