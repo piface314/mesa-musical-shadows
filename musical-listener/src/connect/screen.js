@@ -14,10 +14,11 @@ export default class ConnectScreen extends Component {
     headerTintColor: "white"
   }
 
-  state = { input: "" }
+  state = { inputID: "", inputUser: "" }
 
   toConnectScreen() {
-    this.props.navigation.navigate('Listener', { input: this.state.input })
+    const { inputID, inputUser } = this.state
+    this.props.navigation.navigate('Listener', { deviceID: inputID, user: inputUser })
   }
 
   toDebugScreen() {
@@ -32,9 +33,15 @@ export default class ConnectScreen extends Component {
           <SpinningImage style={{ height: 200, width: null, margin: 25, resizeMode: 'contain' }}
             source={logo} duration={16000} />
           <Input
-            value={this.state.input}
-            onChangeText={input => this.setState({ input })}
-            label="ID" labelStyle={styles.inputLabel}
+            value={this.state.inputID}
+            onChangeText={input => this.setState({ ...this.state, inputID: input })}
+            label="ID da Mesa" labelStyle={styles.inputLabel}
+            inputContainerStyle={styles.inputContainer}
+          />
+          <Input
+            value={this.state.inputUser}
+            onChangeText={input => this.setState({ ...this.state, inputUser: input })}
+            label="Nome de usuário" labelStyle={styles.inputLabel}
             inputContainerStyle={styles.inputContainer}
           />
           <Button title="CONECTAR" raised containerStyle={styles.buttonContainer}
