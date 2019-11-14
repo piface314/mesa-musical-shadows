@@ -27,9 +27,9 @@ void publishTelemetry(String subfolder, String data);
 void publishTelemetry(String subfolder, const char* data, int length);
 void messageReceived(String &topic, String &payload);
 
-void IOTsetup(void (*setusers)(int));
+void IOTsetup(void (*setinfo)(String));
 void IOTloop(bool connectedWiFi);
-void IOTsend(int *shadows);
-void IOTsetUsers(String &payload);
+void IOTsend(shadow_t *shadows);
+void IOTsetInfo(String &payload);
 
 #endif

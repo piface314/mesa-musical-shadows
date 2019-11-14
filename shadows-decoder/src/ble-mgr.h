@@ -15,7 +15,7 @@
 using namespace std;
 
 void BLEsetup();
-void BLEsend(int users, int *shadows);
+void BLEsend(string info, shadow_t *shadows);
 void onWriteCred(string data, int sel);
 
 #endif

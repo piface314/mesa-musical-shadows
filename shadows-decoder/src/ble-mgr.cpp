@@ -3,20 +3,15 @@
 const char SERV_WIFIC_UUID[] = "A6B4E0B4-F610-4C51-903A-8425EEF6FD91";
 const char CHAR_WSSID_UUID[] = "A6B4E0B5-F610-4C51-903A-8425EEF6FD91";
 const char CHAR_WPSWD_UUID[] = "A6B4E0B6-F610-4C51-903A-8425EEF6FD91";
-const char SERV_USERS_UUID[] = "EE0C2928-4910-40A4-AEE0-FCF11A28647F";
-const char CHAR_USERS_UUID[] = "EE0C2929-4910-40A4-AEE0-FCF11A28647F";
+const char SERV_DEBUG_UUID[] = "EE0C2928-4910-40A4-AEE0-FCF11A28647F";
+const char CHAR_DEBUG_UUID[] = "EE0C2929-4910-40A4-AEE0-FCF11A28647F";
 const char SERV_SLDRX_UUID[] = "3908F740-3C1C-43C4-8948-4676B382771E";
 const char CHAR_SLDRX_UUID[NSENSORS][37] = {
   "3908F741-3C1C-43C4-8948-4676B382771E",
-  "3908F742-3C1C-43C4-8948-4676B382771E",
-  "3908F743-3C1C-43C4-8948-4676B382771E",
-  "3908F744-3C1C-43C4-8948-4676B382771E",
-  "3908F745-3C1C-43C4-8948-4676B382771E",
-  "3908F746-3C1C-43C4-8948-4676B382771E",
-  "3908F747-3C1C-43C4-8948-4676B382771E"
+  "3908F742-3C1C-43C4-8948-4676B382771E"
 };
 
-BLECharacteristic *_charUsers = NULL;
+BLECharacteristic *_charDebug = NULL;
 BLECharacteristic *_charSensors[NSENSORS];
 bool _connected = false;
 
@@ -34,7 +29,7 @@ class WifiCallbacks: public BLECharacteristicCallbacks {
 };
 
 void BLEsetup() {
-  if (_charUsers != NULL) return;
+  if (_charDebug != NULL) return;
   // Configura o ESP32
   BLEDevice::init("ESP32 Mesa Musical Shadows");
   BLEServer *pServer = BLEDevice::createServer();
@@ -48,38 +43,34 @@ void BLEsetup() {
   pChWifiPSWD->setCallbacks(new WifiCallbacks(1));
   pWifiService->start();
 
-  // Configura o serviço de #usuários
-  BLEService *pUserService = pServer->createService(SERV_USERS_UUID);
-  _charUsers = pUserService->createCharacteristic(CHAR_USERS_UUID, BLECharacteristic::PROPERTY_NOTIFY);
-  _charUsers->addDescriptor(new BLE2902());
-  pUserService->start();
+  // Configura o serviço de debug
+  BLEService *pDebugService = pServer->createService(SERV_DEBUG_UUID);
+  _charDebug = pDebugService->createCharacteristic(CHAR_DEBUG_UUID, BLECharacteristic::PROPERTY_NOTIFY);
+  _charDebug->addDescriptor(new BLE2902());
+  pDebugService->start();
   
-  //Configura o serviço da música
-  BLEService *pMusicService = pServer->createService(BLEUUID(SERV_SLDRX_UUID), 35, (uint8_t)'\000');
+  //Configura o serviço dos sensores
+  BLEService *pSensorService = pServer->createService(BLEUUID(SERV_SLDRX_UUID), 35, (uint8_t)'\000');
   for (int i = 0; i < NSENSORS; ++i) {
-    _charSensors[i] = pMusicService->createCharacteristic(CHAR_SLDRX_UUID[i], BLECharacteristic::PROPERTY_NOTIFY);
+    _charSensors[i] = pSensorService->createCharacteristic(CHAR_SLDRX_UUID[i], BLECharacteristic::PROPERTY_NOTIFY);
     _charSensors[i]->addDescriptor(new BLE2902());
   }
-  pMusicService->start();
+  pSensorService->start();
   pServer->getAdvertising()->start();
   Serial.println("Setup BLE!");
 }
 
-void BLEsend(int users, int *shadows) {
+void BLEsend(string info, shadow_t *shadows) {
   if (_connected) {
     char val[DATA_SIZE];
     uint8_t *pval = (uint8_t *)val;
     for (int i = 0; i < NSENSORS; ++i) {
-      int ii = NSETS * i;
-      sprintf(val, "%04d%04d%04d%04d%04d",
-        shadows[ii], shadows[ii + 1],
-        shadows[ii + 2], shadows[ii + 3], shadows[ii + 4]);
+      sprintf(val, "%u", shadows[i]);
       _charSensors[i]->setValue(pval, 20);
       _charSensors[i]->notify();
     }
-    uint8_t u = users;
-    _charUsers->setValue(&u, 1);
-    _charUsers->notify();
+    _charDebug->setValue(info);
+    _charDebug->notify();
   }
 }
 

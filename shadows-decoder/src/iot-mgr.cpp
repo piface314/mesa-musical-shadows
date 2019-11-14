@@ -34,15 +34,15 @@ void publishTelemetry(String subfolder, const char* data, int length) {
 
 void messageReceived(String &topic, String &payload) {
   Serial.println("From Cloud: " + topic + " - " + payload);
-  IOTsetUsers(payload);
+  IOTsetInfo(payload);
 }
 
 ////////
 
-void (*_setUsers)(int) = NULL;
+void (*_setInfo)(String) = NULL;
 
-void IOTsetup(void (*setusers)(int)) {
-  _setUsers = setusers;
+void IOTsetup(void (*setinfo)(String)) {
+  _setInfo = setinfo;
   device = new CloudIoTCoreDevice(PROJECTID, LOCATION, REGISTRYID, DEVICEID, PRIVATE_KEY);
   Serial.println("Setup IoT!");
 }
@@ -78,19 +78,19 @@ void IOTloop(bool connectedWiFi) {
   }
 }
 
-void IOTsend(int *shadows) {
+void IOTsend(shadow_t *shadows) {
   static char buffer[10];
   String t = "[";
   for (int i = 0; i < NSENSORS; i++) {
     if (i) t += ",";
-    sprintf(buffer, "%.3lf", (shadows[i] * 1.0) / 1000.0);
+    sprintf(buffer, "%u", shadows[i]);
     t += buffer;
   }
   t += "]";
   publishTelemetry(t);
 }
 
-void IOTsetUsers(String &payload) {
-  if (_setUsers != NULL)
-    _setUsers(payload.toInt());
+void IOTsetInfo(String &payload) {
+  if (_setInfo != NULL)
+    _setInfo(payload);
 }

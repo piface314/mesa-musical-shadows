@@ -7,13 +7,11 @@
 #include "wifi-mgr.h"
 #include "iot-mgr.h"
 
-const int DELAY = 1000;
-
 void SHDsetup();
 void SHDloop();
-int* SHDdecode();
+shadow_t *SHDdecode();
 
-int  SHDgetUsers();
-void SHDsetUsers(int users);
+string SHDgetInfo();
+void SHDsetInfo(String info);
 
 #endif

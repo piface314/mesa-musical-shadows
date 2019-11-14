@@ -1,11 +1,10 @@
 #include "decoder.h"
 
-int _users = 0;
-int _signals[NSENSORS] = { 0 }; 
+string _info = "";
 
 void SHDsetup() {
   WIFIsetup();
-  IOTsetup(SHDsetUsers);
+  IOTsetup(SHDsetInfo);
 }
 
 const int BLEDELAY = DELAY * 10;
@@ -17,12 +16,10 @@ void SHDloop() {
   IOTloop(connectedWiFi);
   if (t - tprev > DELAY) {
     tprev = t;
-    for (int i = 0; i < NSENSORS; i++)
-      _signals[i] = rand() % 1001;
-    int *shadows = SHDdecode();
+    shadow_t *shadows = SHDdecode();
     if (connectedWiFi)
       IOTsend(shadows);
-    BLEsend(SHDgetUsers(), shadows);
+    BLEsend(SHDgetInfo(), shadows);
   }
   if (isBLEPending && t - tstart > BLEDELAY) {
     isBLEPending = false;
@@ -30,19 +27,26 @@ void SHDloop() {
   }
 }
 
-int _shadows[NSENSORS * NSETS];
-int mod[NSETS] = { 1001, 801, 601, 401, 201 };
-int *SHDdecode() {
-  for (int i = 0; i < NSENSORS; i++)
-    for (int j = 0; j < NSETS; j++)
-      _shadows[NSETS * i + j] = _signals[i] % mod[j];
-  return _shadows;
+shadow_t *SHDdecode() {
+  static shadow_t shadows[NSENSORS];
+  for (int i = 0; i < NSENSORS; i++) {
+    unsigned long r = analogRead(SENSORS[i]);
+    if (r < SHADOW_LOWER)
+      r = SHADOW_LOWER;
+    else if (r > SHADOW_UPPER)
+      r = SHADOW_UPPER;
+    shadows[i] = (shadow_t)(((r - SHADOW_LOWER) * 1000ul) / SHADOW_RANGE);
+  }
+  return shadows;
 }
 
-int SHDgetUsers() {
-  return _users;
+string SHDgetInfo() {
+  return _info;
 }
 
-void SHDsetUsers(int users) {
-  _users = users;
+void SHDsetInfo(String info) {
+  char c; int i;
+  for (i = 0; c = info[i]; ++i)
+    _info[i] = c;
+  _info[i] = c;
 }
