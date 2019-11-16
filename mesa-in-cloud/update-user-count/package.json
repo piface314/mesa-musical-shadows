@@ -1,0 +1,7 @@
+{
+  "name": "update-user-count",
+  "version": "0.0.1",
+  "dependencies": {
+    "firebase-admin": "=8.6.1"
+  }
+}
