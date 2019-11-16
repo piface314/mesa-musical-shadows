@@ -40,7 +40,8 @@ exports.addShadow = (event, context) => {
   if (!data)
     throw new Error('No data was provided!')
   const payload = JSON.parse(Buffer.from(data, 'base64').toString())
-  const [ nUsers, sets, readings ] = payload
+  let [ nUsers, sets, readings ] = payload
+  readings = readings.map(r => r / 1000.0)
   const shadows = toShadows(nUsers, sets, readings)
   sendToFirestore(deviceId, shadows).catch(e => console.log(e))
   sendToBigQuery(deviceId, readings).catch(e => console.log(e))
@@ -51,6 +52,6 @@ exports.addShadow = (event, context) => {
   "attributes": {
     "deviceId": "ufv-device"
   },
-  "data": "WzMsIFsxLCAyXSwgWzAuNDIsIDAuODFdXQ=="
+  "data": "WzAsWzEsMl0sWzM0NSw2NzhdXQ=="
 }
 */
