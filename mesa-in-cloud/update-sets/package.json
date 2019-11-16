@@ -1,0 +1,8 @@
+{
+  "name": "update-sets",
+  "version": "0.0.1",
+  "dependencies": {
+    "@google-cloud/bigquery": "^4.3.0",
+    "firebase-admin": "^8.6.1"
+  }
+}
