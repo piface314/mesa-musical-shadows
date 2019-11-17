@@ -1,10 +1,10 @@
 #include "decoder.h"
 
-string _info = "";
+string _config;
 
 void SHDsetup() {
   WIFIsetup();
-  IOTsetup(SHDsetInfo);
+  IOTsetup(&_config);
 }
 
 const int BLEDELAY = DELAY * 10;
@@ -19,7 +19,7 @@ void SHDloop() {
     shadow_t *shadows = SHDdecode();
     if (connectedWiFi)
       IOTsend(shadows);
-    BLEsend(SHDgetInfo(), shadows);
+    BLEsend(_config, shadows);
   }
   if (isBLEPending && t - tstart > BLEDELAY) {
     isBLEPending = false;
@@ -36,17 +36,7 @@ shadow_t *SHDdecode() {
     else if (r > SHADOW_UPPER)
       r = SHADOW_UPPER;
     shadows[i] = (shadow_t)(((r - SHADOW_LOWER) * 1000ul) / SHADOW_RANGE);
+    Serial.printf("Sensor %d: ", i); Serial.println(shadows[i]);
   }
   return shadows;
-}
-
-string SHDgetInfo() {
-  return _info;
-}
-
-void SHDsetInfo(String info) {
-  char c; int i;
-  for (i = 0; c = info[i]; ++i)
-    _info[i] = c;
-  _info[i] = c;
 }

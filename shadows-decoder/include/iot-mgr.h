@@ -11,8 +11,11 @@
 #include <CloudIoTCore.h>
 #include <CloudIoTCoreMqtt.h>
 
+#include <sstream>
 #include "constants.h"
 #include "iot-config.h"
+
+using namespace std;
 
 extern Client *netClient;
 extern CloudIoTCoreDevice *device;
@@ -27,7 +30,7 @@ void publishTelemetry(String subfolder, String data);
 void publishTelemetry(String subfolder, const char* data, int length);
 void messageReceived(String &topic, String &payload);
 
-void IOTsetup(void (*setinfo)(String));
+void IOTsetup(string *config);
 void IOTloop(bool connectedWiFi);
 void IOTsend(shadow_t *shadows);
 void IOTsetInfo(String &payload);

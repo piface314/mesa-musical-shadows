@@ -39,10 +39,10 @@ void messageReceived(String &topic, String &payload) {
 
 ////////
 
-void (*_setInfo)(String) = NULL;
+string *shd_config = NULL;
 
-void IOTsetup(void (*setinfo)(String)) {
-  _setInfo = setinfo;
+void IOTsetup(string *config) {
+  shd_config = config;
   device = new CloudIoTCoreDevice(PROJECTID, LOCATION, REGISTRYID, DEVICEID, PRIVATE_KEY);
   Serial.println("Setup IoT!");
 }
@@ -55,7 +55,7 @@ void IOTconfigure() {
   }
   netClient = new WiFiClientSecure();
   mqttClient = new MQTTClient(512);
-  mqttClient->setOptions(180, true, 1000); // keepAlive, cleanSession, timeout/
+  mqttClient->setOptions(180, true, 1000);
   mqtt = new CloudIoTCoreMqtt(mqttClient, netClient, device);
   mqtt->setUseLts(true);
   mqtt->startMQTT();
@@ -79,18 +79,14 @@ void IOTloop(bool connectedWiFi) {
 }
 
 void IOTsend(shadow_t *shadows) {
-  static char buffer[10];
-  String t = "[";
-  for (int i = 0; i < NSENSORS; i++) {
-    if (i) t += ",";
-    sprintf(buffer, "%u", shadows[i]);
-    t += buffer;
-  }
-  t += "]";
-  publishTelemetry(t);
+  stringstream s;
+  s << *shd_config << "," << shadows[0];
+  for (int i = 1; i < NSENSORS; i++)
+    s << " " << shadows[i];
+  string t = s.str();
+  publishTelemetry(t.c_str(), t.length());
 }
 
 void IOTsetInfo(String &payload) {
-  if (_setInfo != NULL)
-    _setInfo(payload);
+  shd_config->assign(payload.c_str());
 }

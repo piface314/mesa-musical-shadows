@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 
+#include <vector>
 #include <string>
 #include <BLEDevice.h>
 #include <BLEServer.h>
