@@ -13,7 +13,7 @@ const shouldUpdate = async docRef => {
     const lastcheck = snapshot.get('lastcheck')
     if (!lastcheck) return true
     const treshold = 60000 // 1 min
-    return Date.now() - lastcheck.getTime() >= treshold
+    return Date.now() - lastcheck._seconds * 1000 >= treshold
   } catch(e) {
     return true
   }
