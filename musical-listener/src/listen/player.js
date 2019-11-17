@@ -4,7 +4,8 @@ import Sound from 'react-native-sound'
 class Player {
 
   sounds = [
-  ]
+    "00", "01", "02", "10", "11", "12", "20", "21", "22", "30", "31", "32" 
+  ].map(i => new Sound(`mms${i}.mp3`, Sound.MAIN_BUNDLE, err => console.log(i, err)))
 
   play() {
     this.sounds.forEach(s => {

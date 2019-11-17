@@ -25,21 +25,25 @@ export default class ListenerScreen extends Component {
     this.user = getParam('user', '')
     firestore().collection(`devices/${this.deviceID}/users`).add({ name: this.user })
       .then(res => { this.userID = res.id })
-    firestore().collection(`devices/${this.deviceID}/shadows`).onSnapshot(q => {
-      if (!q) return;
-      const docs = q.docChanges()
-      if (docs.length > 0) {
-        console.log(docs[0].doc.get('values'))
-        Player.setVolume(docs[0].doc.get('values'))
-      }
-    })
-    setTimeout(() => Player.play(), 100)
+    this.unsub = firestore().collection(`devices/${this.deviceID}/shadows`)
+      .orderBy('timestamp', 'desc')
+      .limit(1).onSnapshot(qss => {
+        if (!qss || qss.docs.length == 0) return;
+        console.log(qss.docs[0].get('values'))
+        Player.setVolume(qss.docs[0].get('values'))
+      })
+    setTimeout(() => {
+      Player.setVolume([])
+      Player.play()
+    }, 100)
   }
 
   componentWillUnmount() {
     if (this.userID)
       firestore().collection(`devices/${this.deviceID}/users`).doc(this.userID).delete()
         .then(() => console.log("Deleted user"))
+    if (this.unsub)
+      this.unsub();
     Player.stop()
   }
 

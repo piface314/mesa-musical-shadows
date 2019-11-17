@@ -2,6 +2,7 @@ const { BigQuery } = require('@google-cloud/bigquery')
 const bigquery = new BigQuery()
 
 const admin = require('firebase-admin')
+const FieldValue = admin.firestore.FieldValue
 admin.initializeApp()
 var db = admin.firestore()
 
@@ -22,7 +23,7 @@ const toShadows = (nUsers, sets, readings) => {
 }
 
 const sendToFirestore = async (deviceId, shadows) => {
-  const doc = { values: shadows }
+  const doc = { timestamp: FieldValue.serverTimestamp(), values: shadows }
   return db.collection(`devices/${deviceId}/shadows`).add(doc)
 }
 
@@ -39,7 +40,7 @@ exports.addShadow = (event, context) => {
   const { deviceId } = attributes
   if (!data)
     throw new Error('No data was provided!')
-  const payload = JSON.parse(Buffer.from(data, 'base64').toString())
+  const payload = Buffer.from(data, 'base64').toString()
   let [ info, readings ] = payload.split(',').map(sp => sp.split(' ').map(n => +n))
   let nUsers = info[0], sets = info.slice(1)
   readings = readings.map(r => r / 1000.0)

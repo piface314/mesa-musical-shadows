@@ -36,7 +36,6 @@ shadow_t *SHDdecode() {
     else if (r > SHADOW_UPPER)
       r = SHADOW_UPPER;
     shadows[i] = (shadow_t)(((r - SHADOW_LOWER) * 1000ul) / SHADOW_RANGE);
-    Serial.printf("Sensor %d: ", i); Serial.println(shadows[i]);
   }
   return shadows;
 }

@@ -5,7 +5,7 @@ import { colors } from '../theme'
 export default class SensorLog extends Component {
   render() {
     const { reading, style } = this.props
-    if (!reading)
+    if (reading == null)
       return (<View style={style} />)
     return (
       <View style={[{

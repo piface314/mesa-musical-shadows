@@ -12,6 +12,8 @@ const SERV_WIFIC_UUID = "A6B4E0B4-F610-4C51-903A-8425EEF6FD91"
 const SERV_DEBUG_UUID = "EE0C2928-4910-40A4-AEE0-FCF11A28647F"
 const SERV_SLDRX_UUID = "3908F740-3C1C-43C4-8948-4676B382771E"
 
+const bytesToUInt = s => [...s].map(c => c.charCodeAt(0)).reduceRight((a, b) => (a << 8) + b) || 0.0
+
 export default class DebugScreen extends Component {
   static navigationOptions = {
     title: '',
@@ -94,8 +96,9 @@ export default class DebugScreen extends Component {
       )
       
     const readings = []
-    for (let i = 0; this.state["charSensors" + i]; i++)
-      readings[i] = +Base64.decode(this.state["charSensors" + i].value) / 1000.0
+    let c
+    for (let i = 0; c = this.state["charSensors" + i]; i++)
+      readings[i] = bytesToUInt(Base64.decode(c.value)) / 1000.0
 
     return (
       <SafeAreaView style={styles.centerContainer}>

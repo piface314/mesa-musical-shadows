@@ -62,11 +62,8 @@ void BLEsetup() {
 
 void BLEsend(string info, shadow_t *shadows) {
   if (_connected) {
-    char val[DATA_SIZE];
-    uint8_t *pval = (uint8_t *)val;
     for (int i = 0; i < NSENSORS; ++i) {
-      sprintf(val, "%u", shadows[i]);
-      _charSensors[i]->setValue(pval, 20);
+      _charSensors[i]->setValue(shadows[i]);
       _charSensors[i]->notify();
     }
     _charDebug->setValue(info);

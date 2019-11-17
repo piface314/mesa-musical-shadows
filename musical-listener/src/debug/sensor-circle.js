@@ -6,7 +6,7 @@ export default class SensorCircle extends Component {
   static size = 42
 
   floatToHex(float) {
-    return Math.floor(255 * float).toString(16)
+    return ("0" + (Math.floor(255 * float).toString(16))).slice(-2)
   }
 
   render() {
